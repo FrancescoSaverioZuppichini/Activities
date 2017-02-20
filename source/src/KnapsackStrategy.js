@@ -1,31 +1,40 @@
 class KnapsackStrategy {
 
-  solve(time, activities)  {
-    let maxVal = -Infinity;
-    let max = null;
-    // recursively find all combinations of activities
-    // if the total XP of any combination is greater than max, store in closure
-    const findCombos = (items, prefix = []) => {
-      for (let i = 0; i < items.length; i++) {
-        const combo = [
-          ...prefix,
-          items[i]
-        ];
-        const xp = totalXp(combo);
-        if (xp > maxVal && totalTime(combo) <= time) {
-          maxVal = xp;
-          max = combo;
-        }
-        findCombos(items.slice(i + 1), combo);
+  solve(time, activities) {
+
+    const optimalSolution = (items, n = items.length, timeLeft = time) => {
+
+      // if we have no time left or no items left to consider, return empty arr
+      if (n === 0 || timeLeft === 0) {
+        return [];
+      }
+
+      // if last item is too heavy (we sorted the array), don't consider it
+      if (items[n - 1].time > timeLeft) {
+        return optimalSolution(items, n - 1, timeLeft);
+      }
+
+      const lastItem = items[n - 1];
+      const withLastItem = [
+        lastItem,
+        ...optimalSolution(items, n - 1, timeLeft - lastItem.time)
+      ];
+      const withoutLastItem = optimalSolution(items, n - 1, timeLeft);
+
+      if (totalXp(withLastItem) > totalXp(withoutLastItem)) {
+        return withLastItem;
+      } else {
+        return withoutLastItem;
       }
     };
 
-    const totalXp = acts => acts.reduce((total, act) => total + act.xp, 0);
+    const totalXp = arr => arr.reduce((total, ea) => total + ea.xp, 0);
 
-    const totalTime = acts => acts.reduce((total, act) => total + act.time, 0);
+    const sortedByTime = activities
+      .slice()
+      .sort((a, b) => a.time - b.time);
 
-    findCombos(activities);
-    return max;
-  };
+    return optimalSolution(sortedByTime);
+  }
 }
- export default KnapsackStrategy
+export default KnapsackStrategy

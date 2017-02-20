@@ -25,6 +25,8 @@
       </div>
     </div>
     <div class="card-block" v-else>
+      <i class="fa fa-times float-right" aria-hidden="true" v-if="active" @click="remove"></i>
+
       <p class="card-text">{{activity.name}}</p>
       <div class="flex-list">
         <div>

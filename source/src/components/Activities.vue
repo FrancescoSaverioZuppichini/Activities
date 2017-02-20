@@ -20,8 +20,8 @@ export default {
 </script>
 <style>
 #activities{
-  min-height: 30vh;
-  max-height: 80vh;
+  min-height: 20rem;
+  max-height: 30rem;
   overflow-y: scroll;
 }
 </style>
